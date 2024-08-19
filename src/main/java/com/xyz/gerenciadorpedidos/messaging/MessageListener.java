@@ -8,13 +8,10 @@ import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.rabbitmq.client.Channel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 @Component
 public class MessageListener implements ChannelAwareMessageListener {
-
-    private static final Logger logger = LoggerFactory.getLogger(MessageListener.class);
 
     private final PedidoService pedidoService;
 
@@ -28,7 +25,6 @@ public class MessageListener implements ChannelAwareMessageListener {
     public void onMessage(Message message, Channel channel) throws Exception {
         String messageBody = new String(message.getBody());
         try {
-            logger.debug("Received message: {}", messageBody);
 
             String[] parts = messageBody.split(":");
             if (parts.length != 2) {
@@ -40,11 +36,8 @@ public class MessageListener implements ChannelAwareMessageListener {
             pedidoService.updateStatus(pedidoId, newStatus);
 
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-            logger.info("Message processed and acknowledged: {}", messageBody);
-
         } catch (Exception e) {
             channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, true);
-            logger.error("Error processing message: {}", messageBody, e);
         }
     }
 }
