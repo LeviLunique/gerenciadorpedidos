@@ -3,6 +3,7 @@ package com.xyz.gerenciadorpedidos.service;
 import com.xyz.gerenciadorpedidos.entity.Pedido;
 import com.xyz.gerenciadorpedidos.entity.ItemPedido;
 import com.xyz.gerenciadorpedidos.repository.PedidoRepository;
+import com.xyz.gerenciadorpedidos.messaging.MessagePublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +14,12 @@ import java.util.Optional;
 public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
+    private final MessagePublisher messagePublisher;
 
     @Autowired
-    public PedidoService(PedidoRepository pedidoRepository) {
+    public PedidoService(PedidoRepository pedidoRepository, MessagePublisher messagePublisher) {
         this.pedidoRepository = pedidoRepository;
+        this.messagePublisher = messagePublisher;
     }
 
     public List<Pedido> findAll() {
@@ -56,10 +59,11 @@ public class PedidoService {
         }
     }
 
-    public Pedido updateStatus(Long id, String status) {
-        return pedidoRepository.findById(id).map(pedido -> {
-            pedido.setStatus(status);
-            return pedidoRepository.save(pedido);
-        }).orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+    public Pedido updateStatus(Long id, String newStatus) {
+        Pedido pedido = pedidoRepository.findById(id).orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+        pedido.setStatus(newStatus);
+        Pedido updatedPedido = pedidoRepository.save(pedido);
+        messagePublisher.publish(id + ":" + newStatus);
+        return updatedPedido;
     }
 }
