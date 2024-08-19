@@ -1,5 +1,6 @@
 package com.xyz.gerenciadorpedidos.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.persistence.Column;
 
 @Entity
 public class ItemPedido {
@@ -18,6 +20,7 @@ public class ItemPedido {
 
     @ManyToOne
     @JoinColumn(name = "pedido_id", nullable = false)
+    @JsonIgnore
     private Pedido pedido;
 
     @ManyToOne
@@ -28,6 +31,11 @@ public class ItemPedido {
     @Positive(message = "A quantidade deve ser um valor positivo.")
     private Integer quantidade;
 
+    @NotNull(message = "O preço é obrigatório.")
+    @Positive(message = "O preço deve ser um valor positivo.")
+    @Column(nullable = false)
+    private Double preco;
+
     public ItemPedido() {
     };
 
@@ -35,6 +43,7 @@ public class ItemPedido {
         this.produto = produto;
         this.pedido = pedido;
         this.quantidade = quantidade;
+        this.preco = produto.getPreco();
     };
 
     public Long getId() {
@@ -67,6 +76,14 @@ public class ItemPedido {
 
     public void setQuantidade(Integer quantidade) {
         this.quantidade = quantidade;
+    };
+
+    public Double getPreco() {
+        return preco;
+    };
+
+    public void setPreco(Double preco) {
+        this.preco = preco;
     };
 
 }

@@ -39,14 +39,17 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - APP_NAME=${APP_NAME}
-      - DB_URL=${DB_URL}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - RABBITMQ_HOST=${RABBITMQ_HOST}
-      - RABBITMQ_PORT=${RABBITMQ_PORT}
-      - RABBITMQ_USERNAME=${RABBITMQ_USERNAME}
-      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - APP_NAME=gerenciadorpedidos
+      - DB_URL=jdbc:mysql://db:3306/gerenciadorpedidos?useSSL=false&allowPublicKeyRetrieval=true
+      - DB_USER=app_user
+      - DB_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+      - SPRING_FLYWAY_ENABLED=false
+      - SPRING_FLYWAY_LOCATIONS=classpath:db/migration
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
     depends_on:
       db:
         condition: service_healthy
