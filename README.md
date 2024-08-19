@@ -138,7 +138,7 @@ Antes de começar, certifique-se de ter as seguintes ferramentas instaladas em s
 
 1. **Clonar o repositório**:
    ```bash
-   git clone <URL_DO_REPOSITORIO>
+   git clone https://github.com/LeviLunique/gerenciadorpedidos.git
    cd gerenciadorpedidos
    ```
 
