@@ -47,8 +47,13 @@ public class PedidoService {
         }).orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
     }
 
-    public void deleteById(Long id) {
-        pedidoRepository.deleteById(id);
+    public boolean deleteById(Long id) {
+        if (pedidoRepository.existsById(id)) {
+            pedidoRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Pedido updateStatus(Long id, String status) {

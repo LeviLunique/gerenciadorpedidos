@@ -39,8 +39,13 @@ public class ProdutoService {
         }).orElseThrow(() -> new RuntimeException("Produto não encontrado"));
     }
 
-    public void deleteById(Long id) {
-        produtoRepository.deleteById(id);
+    public boolean deleteById(Long id) {
+        if (produtoRepository.existsById(id)) {
+            produtoRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
